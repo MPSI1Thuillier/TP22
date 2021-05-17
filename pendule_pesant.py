@@ -10,11 +10,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Définition des constantes
-m = 58.3 # masse
+m = 0.0583 # masse
 g = 9.81 # cte de pesanteur
 l = 0.525 # longeur de la règle
 J = 1/3 * m * l**2 # moment d'inertie
-mu = 2 # ??? (constante qui fait que le pendule ralenti)
 
 # Conditions initiales
 theta0 = np.pi / 4
@@ -27,8 +26,7 @@ def pendule(y, t):
 
     # On les dérive on fonction du temps
     dtheta = omega
-    #domega = - omp**2 * np.sin(theta) # pendule simple
-    domega = - (mu / J * omega) - (m * g * l / J * np.sin(theta)) # pendule pesant
+    domega = - (m * g * l / J) * np.sin(theta)
     return (dtheta, domega)
 
 # On résout l'équa diff
@@ -39,9 +37,13 @@ solution = odeint(pendule, (theta0, thetap0), t)
 theta, omega = solution[:, 0], solution[:, 1]
 
 # On trace
-#plt.title('θ et ω en fonction du temps')
-plt.title('θ en fonction du temps')
-plt.plot(t, theta, label="θ(t)")
-#plt.plot(t, omega, label="ω(t)")
+figure, axis = plt.subplots(2)
+
+axis[0].set_title('θ en fonction du temps')
+axis[0].plot(t, theta, label="θ(t)")
+
+axis[1].set_title('ω en fonction de θ')
+axis[1].plot(theta, omega, label="ω(θ)")
+
 plt.legend()
 plt.show()
